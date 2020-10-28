@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- <form > -->
+    <input type="text" name="name"></input>
+    <input type="text" name="pwd"></input>
+    <button id="login">登陆</button>
+    <!-- </form> -->
+    <script>
+        $("#login").click(function () {
+            var uname = $("input[name='name'").val()
+            var pwd = $("input[name='pwd'").val()
+            alert(pwd)
+            $.get('http://xuyanwei.cn:8888/login?username='
+                + uname + '&password=bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a',
+                function (resp) {
+                    console.log(resp)
+                    if (resp.status && resp.status === "succ") {
+                        alert("登陆成功")
+                        $.post('http://xuyanwei.cn:8888/api/users/1/5', {},
+                            function (resp1) {
+                                console.log(resp1)
+                            })
+                    }
+                    else {
+                        alert("登陆失败")
+                    }
+                })
+        })
+
+    </script>
+</body>
+
+</html>
