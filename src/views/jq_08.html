@@ -1,0 +1,76 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ajax</title>
+    <script src="./jquery.min.js"></script>
+    <style>
+        
+    </style>
+</head>
+<body>
+    
+    <input type="text" name="uname" value="root"/>
+    <button id="login">登录</button>
+
+    <hr/>
+    <h1>用户信息</h1>
+    <table id="userData">
+        <tr><td></td><td></td><td></td></tr>
+    </table>
+    <script>
+        $("#login").click(function(){
+            var uname=$("input[name='uname']").val()
+            $.get('http://xuyanwei.cn:8888/login?username='+uname
+            +'&password=bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a',
+                function(resp){
+                    if(resp.status&&resp.status==='succ'){
+                        alert('登录成功')
+                        $.ajax({ 
+                            type:"POST",
+                            url: "http://xuyanwei.cn:8888/api/users/1/5",
+                            data:'{}',
+                            contentType:"application/json;charset=utf-8",
+                            success: function(r){
+                                var dataHtml="";
+                                for(var i=0; i<r.list.length; i++){
+                                    dataHtml+="<tr><td>"+r.list[i].id+"</td><td>"+r.list[i].relname+"</td><td>"+r.list[i].mobile+"</td></tr>"
+                                }
+                                r.list
+                                $("#userData").html(dataHtml)
+                                console.log(r)
+                            }
+                        });
+                    }else{
+                        alert('登录失败')
+                    }
+            });
+        })
+
+        
+
+        //发送get请求
+        // $.ajax({ 
+        //     type:"GET",
+        //     url: "http://xuyanwei.cn:8888/login?username=root&password=bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a", 
+        //     success: function(r){
+        //         console.log(resp1)
+        //     }
+        // });
+        //post方式请求后端服务
+        // $.post('http://xuyanwei.cn:8888/api/users/1/5','{}',function(resp1){
+        //     console.log(resp1)
+        // });
+        // $.ajax({ 
+        //     type:"POST",
+        //     url: "http://xuyanwei.cn:8888/api/users/1/5",
+        //     data:'{}',
+        //     contentType:"application/json;charset=utf-8",
+        //     success: function(r){
+        //         console.log(r)
+        //     }
+        // });
+    </script>
+</body>
+</html> -->

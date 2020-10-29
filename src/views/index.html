@@ -231,7 +231,7 @@
   export default {
     components: { "user-form": UserForm },
     data() {
-      // 验证新密码1
+      // 验证新密码
       var validatePass1 = (rule, value, callback) => {
         if (value.length > 20 || value.length < 6) {
           callback(new Error("请输入6 到 20 个字符"));
