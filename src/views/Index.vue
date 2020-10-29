@@ -15,7 +15,40 @@
         </div>
     </el-header>
     <el-container class="index-body-box">
-        <el-aside class="index-left" width="200px">Aside</el-aside>
+        <el-aside class="index-left" width="250px">
+            <el-row class="tac">
+                <el-col :span="12" class="el-col-span">
+                    <h5>主页</h5>
+                    <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-location"></i>
+                                <span>导航一</span>
+                            </template>
+                            <el-menu-item-group>
+
+                                <el-menu-item index="1-1">选项1</el-menu-item>
+                                <el-menu-item index="1-2">选项2</el-menu-item>
+                            </el-menu-item-group>
+
+                        </el-submenu>
+                        <el-menu-item index="2">
+                            <i class="el-icon-menu"></i>
+                            <span slot="title">导航二</span>
+                        </el-menu-item>
+                        <el-menu-item index="3">
+                            <i class="el-icon-document"></i>
+                            <span slot="title">导航三</span>
+                        </el-menu-item>
+                        <el-menu-item index="4">
+                            <i class="el-icon-setting"></i>
+                            <span slot="title">导航四</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-col>
+
+            </el-row>
+        </el-aside>
         <!--   <div :class="maindiv">
             <h1>{{ msg }}</h1>
         </div>-->
@@ -45,22 +78,21 @@
         </span>
         -->
     </el-dialog>
-    <el-dialog title="修改密码" :visible.sync="dialogVisible1" width="30%" :before-close="handleClose1">
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="原密码" prop="pass">
-                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+    <el-dialog width="400px" title="修改密码" class="black-bar" :visible.sync="setPwdFormShow" :before-close="closeSetPwdDialogFunc">
+        <el-form :model="setPwdFormData" :rules="setPwdFormRules" ref="pwdForm" size="small" label-width="100px">
+            <el-form-item label="原密码" prop="oldPwd" label-width="120px">
+                <el-input v-model="setPwdFormData.oldPwd" type="password" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="新密码" prop="checkPass">
-                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            <el-form-item label="新密码" prop="newPwd1" label-width="120px">
+                <el-input v-model="setPwdFormData.newPwd1" type="password" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="新密码" prop="checkPass1">
-                <el-input v-model.number="ruleForm.age"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-form-item label="新密码" prop="newPwd2" label-width="120px">
+                <el-input v-model="setPwdFormData.newPwd2" type="password" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button size="small" type="primary" :loading="setPwdBtloading" @click="setPwdSaveFunc">确 定</el-button>
+        </div>
     </el-dialog>
 </el-container>
 </template>
@@ -68,71 +100,77 @@
 <script>
 export default {
     data() {
-        var checkAge = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('年龄不能为空'));
-            }
-            setTimeout(() => {
-                if (!Number.isInteger(value)) {
-                    callback(new Error('请输入数字值'));
-                } else {
-                    if (value < 18) {
-                        callback(new Error('必须年满18岁'));
-                    } else {
-                        callback();
-                    }
-                }
-            }, 1000);
-        };
-        var validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入密码'));
+        // 验证新密码1
+        var validatePass1 = (rule, value, callback) => {
+            if (value.length > 20 || value.length < 6) {
+                callback(new Error('请输入6 到 20 个字符'))
             } else {
-                if (this.ruleForm.checkPass !== '') {
-                    this.$refs.ruleForm.validateField('checkPass');
+                if (this.setPwdFormData.newPwd2 !== '') {
+                    this.$refs.pwdForm.validateField('newPwd2')
                 }
-                callback();
+                callback()
             }
-        };
+        }
+        // 验证新密码2
         var validatePass2 = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'));
-            } else if (value !== this.ruleForm.pass) {
-                callback(new Error('两次输入密码不一致!'));
+            if (value !== this.setPwdFormData.newPwd1) {
+                callback(new Error('两次输入密码不一致!'))
             } else {
-                callback();
+                callback()
             }
-        };
+        }
         return {
             //zhy
             userName: "系统管理员",
             msg: "",
             dialogVisible: false,
-            dialogVisible1: false,
             uname: "",
             tel: "",
             dept: "",
             email: "",
-
-            ruleForm: {
-                pass: '',
-                checkPass: '',
-                age: ''
+            // 是否显示修改密码界面
+            setPwdFormShow: false,
+            // 修改密码保存加载按钮
+            setPwdBtloading: false,
+            // 修改密码表单值
+            setPwdFormData: {},
+            // 修改密码表单验证
+            setPwdFormRules: {
+                oldPwd: [{
+                        required: true,
+                        message: '请输入原密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 6,
+                        max: 20,
+                        message: "message: '长度在 6 到 20 个字符'",
+                        trigger: 'blur'
+                    }
+                ],
+                newPwd1: [{
+                        required: true,
+                        message: '请输入新密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: validatePass1,
+                        trigger: 'blur'
+                    }
+                ],
+                newPwd2: [{
+                        required: true,
+                        message: '请再次输入新密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: validatePass2,
+                        trigger: 'blur'
+                    }
+                ]
             },
-            rules: {
-                pass: [{
-                    validator: validatePass,
-                    trigger: 'blur'
-                }],
-                checkPass: [{
-                    validator: validatePass2,
-                    trigger: 'blur'
-                }],
-                age: [{
-                    validator: checkAge,
-                    trigger: 'blur'
-                }]
-            }
+            // 是否显示用户信息界面
+            userInfoShow: false
         };
 
     },
@@ -144,7 +182,7 @@ export default {
                 window.location.href = "/";
 
             } else if (command === "setPwd") {
-                this.dialogVisible1 = true
+                this.setPwdFormShow = true
             } else if (command === "uInfo") {
 
                 var uInfo = JSON.parse(window.localStorage.getItem("userInfo"))
@@ -159,28 +197,63 @@ export default {
         handleClose() {
             this.dialogVisible = false
         },
-        handleClose1() {
-            this.dialogVisible1 = false
-        },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
+        setPwdSaveFunc() {
+            this.setPwdBtloading = true
+            // var sha256 = require('js-sha256').sha256 // 引入sha256库
+            this.$refs.pwdForm.validate(valid => {
                 if (valid) {
-                    alert('submit!');
+                    // setPwdAPI({
+                    //         username: this.userInfo.username,
+                    // oldPwd: sha256(this.setPwdFormData.oldPwd),
+                    //         newPwd: sha256(this.setPwdFormData.newPwd1)
+                    //     })
+                    //     .then(res => {
+                    //         if (res.status === 'succ') {
+                    //             this.$message.success('修改成功')
+                    //             this.setPwdFormShow = false
+                    //         } else {
+                    //             this.$message.warning(res.result)
+                    //         }
+                    //     })
+                    //     .finally(() => {
+                    //         this.setPwdBtloading = false
+                    //     })
                 } else {
-                    console.log('error submit!!');
-                    return false;
+                    this.setPwdBtloading = false
+                    return false
                 }
-            });
+            })
         },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        // 关闭修改密码界面
+        closeSetPwdDialogFunc(done) {
+            this.$nextTick(() => {
+                this.setPwdFormData = {}
+                this.$refs.pwdForm.resetFields()
+            })
+            this.setPwdBtloading = false
+            done()
+        },
+        handleOpen(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        handleClose1(key, keyPath) {
+            console.log(key, keyPath);
         }
+
     }
 
 };
 </script>
 
 <style scoped>
+.el-menu-item-group {
+    margin-left: 0px;
+}
+
+.el-col-span {
+    width: 100%;
+}
+
 .index-head {
     background-color: #5690fd;
     box-shadow: 0 5px 10px #ddd;
@@ -199,7 +272,7 @@ export default {
 
 .index-left {
     background-color: #2e3353;
-    height: 400px;
+
     transition: left 0.23s ease-in-out;
 }
 
@@ -207,24 +280,6 @@ export default {
     height: 35px;
     margin: 15px;
     float: right;
-}
-
-.red_box {
-    height: 400px;
-    width: 100%;
-    background-color: red;
-}
-
-.green_box {
-    height: 400px;
-    width: 100%;
-    background-color: green;
-}
-
-.black_box {
-    height: 400px;
-    width: 100%;
-    background-color: wheat;
 }
 
 .btn-setting-box .el-dropdown {
