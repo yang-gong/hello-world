@@ -32,7 +32,7 @@ export default {
   methods: {
     login() {
       var sha256 = require("js-sha256").sha256;
-      //var that=this;
+     var that=this;
       axios
         .get(
          '/data-view/login?username=' + this.uname + '&password=' + sha256(this.pwd) 
@@ -41,7 +41,7 @@ export default {
           if ( resp.data.status === "succ") {
             alert("登陆成功");
             console.log(resp);
-            this.$router.push({
+            that.$router.push({
                 path:'/index'
             })
           } else {

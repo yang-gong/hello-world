@@ -7,9 +7,9 @@
             {{ userName }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="a">修改密码</el-dropdown-item>
-            <el-dropdown-item command="b">个人信息</el-dropdown-item>
-            <el-dropdown-item command="c">退出</el-dropdown-item>
+            <el-dropdown-item command="setPwd">修改密码</el-dropdown-item>
+            <el-dropdown-item command="showInfo">个人信息</el-dropdown-item>
+            <el-dropdown-item command="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -34,20 +35,37 @@ export default {
     };
   },
   methods: {
-    handleCommand(command) {
-      if (command == "a") {
-        this.maindiv = "red_box";
-        // this.msg = "我要修改密码";
-
-        // this.$message('click on item ' + command);
-      } else if (command == "b") {
-        this.maindiv = "green_box";
-        // this.msg = "我是个人信息";
-      } else if (command == "c") {
-        this.maindiv = "black_box ";
-        // this.msg = "我要退出";
+      handleCommand(command) {
+      if (command === "logout") {
+        // logoutAPI().then((res) => {
+        //   if (res.status === "succ") {
+        //     cleanSessionStorage();
+            window.location.href = "/";
+        //   } else {
+        //     this.$message.warning("操作失败，请稍后重试。。。");
+        //   }
+        // });
       }
+      //  else if (command === "setPwd") {
+      //   this.setPwdFormShow = true;
+      // } else if (command === "showInfo") {
+      //   this.userInfoShow = true;
+      // }
     },
+    // handleCommand(command) {
+    //   if (command == "a") {
+    //     this.maindiv = "red_box";
+    //     // this.msg = "我要修改密码";
+
+    //     // this.$message('click on item ' + command);
+    //   } else if (command == "b") {
+    //     this.maindiv = "green_box";
+    //     // this.msg = "我是个人信息";
+    //   } else if (command == "c") {
+    //     this.maindiv = "black_box ";
+    //     // this.msg = "我要退出";
+    //   }
+    // },
   },
 };
 </script>

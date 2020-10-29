@@ -5,12 +5,12 @@ module.exports={
         https:false,
         open:true,
         proxy:{
-            'data-view/*':{
+            '/data-view/*':{
                 target:"http://xuyanwei.cn:8888/",
                 changeOrigin:true,
                 ws:true,
                 pathRewrite:{
-                    '^data-view':"/"
+                    '/data-view/*':"/"
                 }
             }
         }
