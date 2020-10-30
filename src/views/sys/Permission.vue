@@ -1,5 +1,5 @@
 <template>
-<div >
+<div>
     <h1>我是hello</h1>
 
 </div>

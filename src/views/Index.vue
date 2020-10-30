@@ -1,6 +1,7 @@
 <template>
 <el-container class="index-bg">
     <el-header class="index-head">
+        <button @click="black">按钮</button>
         <div class="btn-setting-box">
             <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -15,35 +16,21 @@
         </div>
     </el-header>
     <el-container class="index-body-box">
-        <el-aside class="index-left" width="250px">
+        <el-aside class="index-left" :width="isCollapse?'64px':'200px'">
             <el-row class="tac">
                 <el-col :span="12" class="el-col-span">
                     <h5>主页</h5>
-                    <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-                        <el-submenu index="1">
+                    <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" router :collapse="isCollapse">
+                        <el-submenu index="index" v-for="(item,index) in meniList" :key="index">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
-                                <span>导航一</span>
+                                <i class="item.icon "></i>
+                                <span class="span_span">{{item.name}}</span>
                             </template>
                             <el-menu-item-group>
-
-                                <el-menu-item index="1-1">选项1</el-menu-item>
-                                <el-menu-item index="1-2">选项2</el-menu-item>
+                                <el-menu-item :index="subItem.path" v-for="(subItem, subIndex) in item.children" :key="subIndex">{{subItem.name}}</el-menu-item>
                             </el-menu-item-group>
-
                         </el-submenu>
-                        <el-menu-item index="2">
-                            <i class="el-icon-menu"></i>
-                            <span slot="title">导航二</span>
-                        </el-menu-item>
-                        <el-menu-item index="3">
-                            <i class="el-icon-document"></i>
-                            <span slot="title">导航三</span>
-                        </el-menu-item>
-                        <el-menu-item index="4">
-                            <i class="el-icon-setting"></i>
-                            <span slot="title">导航四</span>
-                        </el-menu-item>
+
                     </el-menu>
                 </el-col>
 
@@ -53,7 +40,9 @@
             <h1>{{ msg }}</h1>
         </div>-->
         <el-main>
-            main
+            <router-view></router-view>
+            <!-- <v-user v-show="aa"></v-user>-->
+
         </el-main>
     </el-container>
     <el-dialog title="用户信息" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
@@ -128,13 +117,17 @@ export default {
             tel: "",
             dept: "",
             email: "",
+            meniList: JSON.parse(window.localStorage.getItem('userMenu')),
+
             // 是否显示修改密码界面
             setPwdFormShow: false,
             // 修改密码保存加载按钮
             setPwdBtloading: false,
+            isCollapse: false,
             // 修改密码表单值
             setPwdFormData: {},
             // 修改密码表单验证
+            aa: false,
             setPwdFormRules: {
                 oldPwd: [{
                         required: true,
@@ -171,9 +164,11 @@ export default {
             },
             // 是否显示用户信息界面
             userInfoShow: false
+
         };
 
     },
+
     methods: {
         handleCommand(command) {
 
@@ -238,6 +233,9 @@ export default {
         },
         handleClose1(key, keyPath) {
             console.log(key, keyPath);
+        },
+        black() {
+            this.isCollapse = true
         }
 
     }
@@ -246,6 +244,10 @@ export default {
 </script>
 
 <style scoped>
+.span_span {
+    color: red;
+}
+
 .el-menu-item-group {
     margin-left: 0px;
 }

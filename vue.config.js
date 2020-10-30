@@ -13,6 +13,10 @@ module.exports={
                     '/data-view/*':"/"
                 }
             }
+        },
+        overlay: {
+            warning: false,
+            errors: false
         }
     }
 }

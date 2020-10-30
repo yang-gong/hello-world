@@ -9,7 +9,7 @@
                 <el-input placeholder="用户名" v-model="uname"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-input placeholder="密码" v-model="pwd"></el-input>
+                <el-input placeholder="密码" v-model="pwd" show-password></el-input>
             </el-form-item>
 
             <el-button class="login-btn" type="primary" @click="login">登录</el-button>
